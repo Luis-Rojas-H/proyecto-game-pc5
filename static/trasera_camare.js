@@ -17,29 +17,65 @@ import { mockWithVideo } from './libs/camera-mock.js';
       `/static/assets/models/test/${i + 1}.png`);
     const loader = new THREE.TextureLoader();
 
-    for (let i = 0; i < overlayPaths.length; i++) {
-      const texture = await loader.loadAsync(overlayPaths[i]);
+  for (let i = 0; i < overlayPaths.length; i++) {
+    const texture = await loader.loadAsync(overlayPaths[i]);
 
-      // Crear un plano con la imagen como textura
-      const geometry = new THREE.PlaneGeometry(1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-      const plane = new THREE.Mesh(geometry, material);
+    // Imagen overlay principal
+    const overlayPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+    overlayPlane.position.set(0, 1, 0); // encima del target
+    overlayPlane.visible = false;
 
-      // Posicionar el plano encima del target
-      plane.position.set(0, 1, 0); // 1 metro sobre el marcador
-      plane.visible = false;
+    // Fondo blanco del cuadro de texto
+    const textBgPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.2, 0.4),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    textBgPlane.position.set(0.7, 1, 0); // a la derecha del overlay
+    textBgPlane.visible = false;
 
-      // Anclar al target i
-      const anchor = mindarThree.addAnchor(i);
-      anchor.group.add(plane);
+    // Texto "Hola cachimbo" (como textura en canvas)
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.font = "bold 40px Arial";
+    ctx.fillText("Hola cachimbo", 20, 80);
 
-      // Mostrar solo cuando se detecte
-      anchor.onTargetFound = () => plane.visible = true;
-      anchor.onTargetLost = () => plane.visible = false;
-    }
+    const textTexture = new THREE.CanvasTexture(canvas);
+    const textPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.2, 0.4),
+      new THREE.MeshBasicMaterial({ map: textTexture, transparent: true })
+    );
+    textPlane.position.set(0.7, 1, 0.01); // sobre el fondo blanco
+    textPlane.visible = false;
 
-    // 4. Arrancar la experiencia
-    await mindarThree.start();
-    renderer.setAnimationLoop(() => renderer.render(scene, camera));
+    // Anchor para target i
+    const anchor = mindarThree.addAnchor(i);
+    anchor.group.add(overlayPlane);
+    anchor.group.add(textBgPlane);
+    anchor.group.add(textPlane);
+
+    // Mostrar/ocultar cuando se detecte
+    anchor.onTargetFound = () => {
+      overlayPlane.visible = true;
+      textBgPlane.visible = true;
+      textPlane.visible = true;
+    };
+    anchor.onTargetLost = () => {
+      overlayPlane.visible = false;
+      textBgPlane.visible = false;
+      textPlane.visible = false;
+    };
+  }
+   //¡Arrancar MindAR y el render loop! 
+  await mindarThree.start();
+  renderer.setAnimationLoop(() => renderer.render(scene, camera));
+
   });
 

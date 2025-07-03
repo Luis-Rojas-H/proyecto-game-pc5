@@ -15,6 +15,9 @@ def practice():
 @app.route("/camara-trasera")
 def camaratrasera():
     return render_template('trasera.html')
+@app.route("/filtro")
+def filtro():
+    return render_template('main_html_face.html')
 
 if __name__ == "__main__":
     app.run()

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MathVR</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/home.css') }}"
+    />
+  </head>
+  <body>
+    <h1 id="heading">Bienvenido a MathVR</h1>
+    <img
+      id="logo"
+      class="logo"
+      src="{{ url_for('static', filename='assets/img/logo.png') }}"
+      alt="MathVR Logo"
+    />
+    <span class="start-link">
+      <a href="/practice">Comenzar</a>
+    </span>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/home.js') }}"></script>
+  </body>
+</html>

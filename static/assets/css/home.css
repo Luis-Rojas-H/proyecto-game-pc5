@@ -1,0 +1,93 @@
+body {
+  font-family: "Avenir", sans-serif;
+  background-color: #0e100f;
+  color: #fffce1;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+h1 {
+  opacity: 0;
+  font-size: 3rem;
+  text-align: center;
+  margin: 0;
+  font-weight: bold;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  word-wrap: break-word;
+  max-width: 90vw;
+}
+
+a {
+  color: #fffce1;
+  text-decoration: none;
+}
+
+.logo {
+  width: 240px;
+  height: auto;
+  opacity: 0;
+  object-fit: cover;
+  max-width: 80vw;
+}
+
+.start-link {
+  font-size: x-large;
+  padding: 1rem 2rem;
+  background-image: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-radius: 5px;
+}
+
+/* Media queries para hacer el h1 responsive */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2rem;
+    letter-spacing: 1.5px;
+    padding: 0 20px;
+  }
+
+  .logo {
+    width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    padding: 0 15px;
+  }
+
+  .logo {
+    width: 150px;
+  }
+}
+
+@media (max-width: 320px) {
+  h1 {
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    padding: 0 10px;
+  }
+
+  .logo {
+    width: 120px;
+  }
+}
+
+/* Media query para pantallas grandes */
+@media (min-width: 1200px) {
+  h1 {
+    font-size: 4rem;
+    letter-spacing: 3px;
+  }
+
+  .logo {
+    width: 280px;
+  }
+}

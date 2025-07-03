@@ -1,23 +1,17 @@
 import tempfile
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
-
 
 @app.route("/")
 def main():
     return render_template('home.html')
 
-@app.route("/practice")
+@app.route("/practicar")
 def practice():
-    return render_template('main_html.html')
-@app.route("/camara-trasera")
-def camaratrasera():
-    return render_template('trasera.html')
-@app.route("/filtro")
-def filtro():
-    return render_template('main_html_face.html')
+    tipo = request.args.get('tipo', default=None)
+    return render_template('practice.html', tipo=tipo)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)

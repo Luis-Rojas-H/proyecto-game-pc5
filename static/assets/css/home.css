@@ -1,14 +1,9 @@
-body {
-  font-family: "Avenir", sans-serif;
-  background-color: #0e100f;
-  color: #fffce1;
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -20,27 +15,77 @@ h1 {
   letter-spacing: 2px;
   line-height: 1.2;
   word-wrap: break-word;
-  max-width: 90vw;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.container-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  max-width: 16rem;
+  margin: 0 auto;
+}
+
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.level-box {
+  border: 1px solid darkgreen;
+  border-radius: 10px;
+  padding: 16px;
+  width: 320px;
+}
+
+.icon {
+  font-size: 40px;
+  text-align: center;
+}
+
+.level-box p:first-of-type {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.level-box h2 {
+  font-size: 32px;
+  text-align: center;
+}
+
+.level-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.level-box li {
+  margin: 5px 0;
+  border: 1px solid #f0f0f0;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.start-link {
+  font-size: x-large;
+  padding: 0.5rem 2rem;
+  background-image: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-radius: 5px;
+  display: block;
+  margin: 20px auto 0 auto;
+  text-align: center;
 }
 
 a {
   color: #fffce1;
   text-decoration: none;
-}
-
-.logo {
-  width: 240px;
-  height: auto;
-  opacity: 0;
-  object-fit: cover;
-  max-width: 80vw;
-}
-
-.start-link {
-  font-size: x-large;
-  padding: 1rem 2rem;
-  background-image: linear-gradient(to right, #ff7e5f, #feb47b);
-  border-radius: 5px;
 }
 
 /* Media queries para hacer el h1 responsive */

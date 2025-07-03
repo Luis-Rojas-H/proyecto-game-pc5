@@ -1,0 +1,35 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  position: relative;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.options {
+  width: 100%;
+  position: absolute;
+  bottom: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 36px;
+  z-index: 999;
+}
+
+.options span {
+  padding: 16px;
+  border: 1px solid #fff;
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+}

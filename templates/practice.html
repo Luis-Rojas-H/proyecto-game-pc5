@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MathVR</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/practice.css') }}"
+    />
+    <script
+      data-consolejs-channel="35e2b394-4c0b-60b5-8c99-0d6fe1455065"
+      src="https://remotejs.com/agent/agent.js"
+    ></script>
+  </head>
+  <body>
+    <section id="ar-container" class="container"></section>
+    <div id="options" class="options">
+      <span>❓❓</span>
+      <span>🤔</span>
+    </div>
+    <script src="{{ url_for('static', filename='libs/mindar/mindar-image-three.prod.js') }}"></script>
+    <script
+      src="{{ url_for('static', filename='practice.js') }}"
+      type="module"
+    ></script>
+  </body>
+</html>

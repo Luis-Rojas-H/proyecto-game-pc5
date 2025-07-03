@@ -1,21 +1,32 @@
-import { mockWithVideo } from './libs/camera-mock.js'; 
-  const THREE = window.MINDAR.IMAGE.THREE;
+import { mockWithVideo } from "./libs/camera-mock.js";
+const THREE = window.MINDAR.IMAGE.THREE;
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Iniciar MindAR con tu archivo .mind unificado
-    const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-      container: document.body,
-      imageTargetSrc: '/static/assets/targets/cultura/targets_all.mind',
-    });
-    const { renderer, scene, camera } = mindarThree;
+document.addEventListener("DOMContentLoaded", async () => {
+  let objectDetectedInitially = false;
 
-    // 2. Agregar luz
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1));
+  // Ocultar el div options inicialmente
+  const optionsDiv = document.getElementById("options");
+  if (optionsDiv) {
+    optionsDiv.style.display = "none";
+  }
 
-    // 3. Cargar las imágenes overlay
-    const overlayPaths = Array.from({ length: 14 }, (_, i) =>
-      `/static/assets/models/test/${i + 1}.png`);
-    const loader = new THREE.TextureLoader();
+  // 1. Iniciar MindAR con tu archivo .mind unificado
+  const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+    container: document.getElementById("ar-container"),
+    imageTargetSrc: "/static/assets/targets/cultura/targets_all.mind",
+    preferredVideoFacingMode: "environment",
+  });
+  const { renderer, scene, camera } = mindarThree;
+
+  // 2. Agregar luz
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1));
+
+  // 3. Cargar las imágenes overlay
+  const overlayPaths = Array.from(
+    { length: 14 },
+    (_, i) => `/static/assets/models/test/${i + 1}.png`
+  );
+  const loader = new THREE.TextureLoader();
 
   for (let i = 0; i < overlayPaths.length; i++) {
     const texture = await loader.loadAsync(overlayPaths[i]);
@@ -66,6 +77,19 @@ import { mockWithVideo } from './libs/camera-mock.js';
       overlayPlane.visible = true;
       textBgPlane.visible = true;
       textPlane.visible = true;
+      // Si aún no se ha detectado ningún objeto, actualiza la variable
+      if (!objectDetectedInitially) {
+        objectDetectedInitially = true;
+        // Mostrar el div options
+        if (optionsDiv) {
+          optionsDiv.style.display = "block";
+        }
+        alert(
+          "¡Primer objeto detectado! objectDetectedInitially es: " +
+            objectDetectedInitially
+        );
+        // Aquí puedes ejecutar cualquier código que solo deba correr la primera vez
+      }
     };
     anchor.onTargetLost = () => {
       overlayPlane.visible = false;
@@ -73,9 +97,7 @@ import { mockWithVideo } from './libs/camera-mock.js';
       textPlane.visible = false;
     };
   }
-   //¡Arrancar MindAR y el render loop! 
+  //¡Arrancar MindAR y el render loop!
   await mindarThree.start();
   renderer.setAnimationLoop(() => renderer.render(scene, camera));
-
-  });
-
+});

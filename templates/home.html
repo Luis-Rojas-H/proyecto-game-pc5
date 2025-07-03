@@ -11,15 +11,62 @@
   </head>
   <body>
     <h1 id="heading">Bienvenido a MathVR</h1>
-    <img
-      id="logo"
-      class="logo"
-      src="{{ url_for('static', filename='assets/img/logo.png') }}"
-      alt="MathVR Logo"
-    />
-    <span class="start-link">
-      <a href="/camara-trasera">Comenzar</a>
-    </span>
+
+    <div class="container-logo">
+      <img
+        id="logo"
+        class="logo"
+        src="{{ url_for('static', filename='assets/img/logo.png') }}"
+        alt="MathVR Logo"
+      />
+    </div>
+
+    <div class="levels">
+      <div class="level-box">
+        <div class="icon">🌎</div>
+        <h2>Cultural</h2>
+        <p>Aprenderás sobre las diversas culturas del Perú</p>
+        <p><strong>Ejemplos:</strong></p>
+        <ul>
+          <li>¿Dónde se ubica Machu Picchu?</li>
+          <li>¿Qué civilización construyó Chan Chan?</li>
+          <li>¿Qué festividad se celebra en Puno?</li>
+        </ul>
+        <button class="start-link">
+          <a href="/practicar?tipo=cultural">Comenzar</a>
+        </button>
+      </div>
+
+      <div class="level-box">
+        <div class="icon">🧮</div>
+        <h2>Matemáticas</h2>
+        <p>Aprenderás operaciones y conceptos matemáticos básicos</p>
+        <p><strong>Ejemplos:</strong></p>
+        <ul>
+          <li>5 + 7 = ?</li>
+          <li>9 × 6 = ?</li>
+          <li>12 ÷ 4 = ?</li>
+        </ul>
+        <button class="start-link">
+          <a href="/practicar?tipo=matematica">Comenzar</a>
+        </button>
+      </div>
+
+      <div class="level-box">
+        <div class="icon">💻</div>
+        <h2>Programación</h2>
+        <p>Conocerás los fundamentos de la lógica y programación</p>
+        <p><strong>Ejemplos:</strong></p>
+        <ul>
+          <li>¿Qué es una variable?</li>
+          <li>¿Qué significa "if" en código?</li>
+          <li>¿Para qué sirve un bucle?</li>
+        </ul>
+        <button class="start-link">
+          <a href="/practicar?tipo=programacion">Comenzar</a>
+        </button>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="{{ url_for('static', filename='assets/js/home.js') }}"></script>

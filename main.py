@@ -13,10 +13,6 @@ def main():
 def practice():
     return render_template('main_html.html')
 
-@app.route("/filtro")
-def filtro():
-    return render_template('main_html_face.html')
-
 
 if __name__ == "__main__":
     app.run()

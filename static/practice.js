@@ -10,15 +10,16 @@ function getTipoFromURL() {
 
 let PREGUNTAS = [];
 let PISTAS = [
-  "Dirigete a la facultad de Ciencias Sociales, donde encontrarás información sobre la cultura. Puedes enconntrarla en la estatua.",
-  "Busca en la biblioteca de la facultad de Ciencias Sociales, allí encontrarás libros y recursos sobre la cultura.",
-  "En la facultad de Ciencias Sociales, dirígete al área de exposiciones culturales, donde encontrarás información sobre las culturas del Perú.",
-  "En la facultad de Ciencias Sociales, busca el mural que representa las culturas del Peru, allí encontrarás información sobre las culturas del Perú.",
-  "En la facultad de Ciencias Sociales, dirígete al área de exposiciones culturales, donde encontrarás información sobre las culturas del Perú.",
+  "Si por la UNI tú quieres pasear, a la FIEECS debes llegar. En el centro me verás, de pie, firme y sin hablar. De historia y ciencia puedo contar, aunque en piedra me hayan de tallar.",
+  "Si a la FIM decides llegar, al centro te debes acercar. Con casco y traje especial, parece de otro lugar. No camina, no respira, pero a las estrellas admira.",
+  "Al pabellón central debes entrar, y en medio te debes parar. De mirada seria y gran saber, fundó la UNI con mucho poder. Aunque de mármol me ves callar, mi legado no deja de brillar.",
+  "Si a la FAUA quieres entrar, este arte no puedes ignorar. Con peces y formas que saben nadar, sus colores te van a asombrar. No se mueve ni hace ruido, pero guarda un arte escondido.",
+  "Junto al coliseo me puedes hallar, con traje y corbata, te voy a esperar.Ingeniero notable, con gran vocación, aportó a la ciencia con dedicación. No hablo ni me muevo, pero aquí estoy, honrando el saber del que mucho dio.",
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
   const tipo = getTipoFromURL();
+  const tipoFolder = tipo;
   let geminiMessage = await getGeminiResponse(tipo);
 
   if (geminiMessage) {
@@ -36,14 +37,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         descripcion: pregunta.Descripcion,
         correcta: pregunta.Alternativa_correcta,
       }));
+
       console.log("Preguntas cargadas desde Gemini:", PREGUNTAS);
     } catch (e) {
       console.error("Error al parsear JSON de Gemini:", geminiMessage, e);
-      return;
+      return; // MODIFICADO: No continuar si falla el parseo
     }
   } else {
     console.warn("No se pudo obtener respuesta de Gemini");
-    return;
+    return; // MODIFICADO: No continuar si no hay preguntas
   }
 
   let objectDetectedInitially = false;
@@ -144,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const overlayPaths = Array.from(
     { length: 14 },
-    (_, i) => `/static/assets/models/test/${i + 1}.png`
+    (_, i) => `/static/assets/models/${tipoFolder}/${i + 1}.png`
   );
   const loader = new THREE.TextureLoader();
   const anchors = [];
@@ -170,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     textCtx.clearRect(0, 0, textCanvas.width, textCanvas.height);
     textCtx.fillStyle = "#330867";
-    textCtx.font = "bold 20px Arial";
+    textCtx.font = "bold 24px Arial";
     textCtx.textAlign = "center";
 
     function wrapText(text, maxWidth) {
@@ -210,19 +212,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   for (let i = 0; i < overlayPaths.length; i++) {
     const texture = await loader.loadAsync(overlayPaths[i]);
 
+    // Imagen overlay principal - posicionada arriba a la izquierda
     const overlayPlane = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1),
       new THREE.MeshBasicMaterial({ map: texture, transparent: true })
     );
-    overlayPlane.position.set(0, 1.5, 0.02);
+    overlayPlane.position.set(-0.8, 0.3, 0.02);
     overlayPlane.visible = false;
 
     const textBgCanvas = document.createElement("canvas");
-    textBgCanvas.width = 600;
-    textBgCanvas.height = 600;
+    textBgCanvas.width = 500;
+    textBgCanvas.height = 250;
     const bgCtx = textBgCanvas.getContext("2d");
 
-    bgCtx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    // Dibujar fondo blanco semi-transparente con bordes redondeados
+    bgCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
     drawRoundedRect(bgCtx, 0, 0, textBgCanvas.width, textBgCanvas.height, 20);
     bgCtx.fill();
 
@@ -233,20 +237,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const textBgTexture = new THREE.CanvasTexture(textBgCanvas);
     const textBgPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.5, 2.5),
+      new THREE.PlaneGeometry(2.5, 1.25),
       new THREE.MeshBasicMaterial({ map: textBgTexture, transparent: true })
     );
     textBgPlane.position.set(0, -0.5, 0);
     textBgPlane.visible = false;
 
     const textCanvas = document.createElement("canvas");
-    textCanvas.width = 600;
-    textCanvas.height = 600;
+    textCanvas.width = 500;
+    textCanvas.height = 250;
     const textCtx = textCanvas.getContext("2d");
 
     const textTexture = new THREE.CanvasTexture(textCanvas);
     const textPlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.5, 2.5),
+      new THREE.PlaneGeometry(2.5, 1.25),
       new THREE.MeshBasicMaterial({ map: textTexture, transparent: true })
     );
     textPlane.position.set(0, -0.5, 0.01);
@@ -290,6 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
+  // Arrancar MindAR y el render loop!
   await mindarThree.start();
   renderer.setAnimationLoop(() => renderer.render(scene, camera));
 });

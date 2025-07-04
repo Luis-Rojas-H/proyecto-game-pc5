@@ -35,12 +35,21 @@
 }
 
 .question-container {
-  width: 100%;
-  display: none;
-  position: absolute;
-  top: 24px;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1000;
 }
 
 .question-container p {
@@ -75,4 +84,110 @@
   position: absolute;
   top: 85%;
   left: 70%;
+}
+
+
+#question-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: black;
+}
+
+#alternatives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* CENTRA LAS OPCIONES */
+  gap: 10px;
+}
+
+#alternatives-list li {
+  background-color: #f0f0f0;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: center;
+  font-size: 16px;
+}
+
+.feedback-message {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+
+  
+}
+
+#help-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background-color: white;
+  color: #e53935;
+  border: 2px solid #e53935;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#help-button:hover {
+  background-color: #e53935;
+  color: white;
+}
+
+#help-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 998;
+}
+
+#help-content {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  font-size: 16px;
+}
+
+#help-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 18px;
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}
+
+.help-arrow {
+  font-size: 24px;
+  margin: 5px 0;
 }

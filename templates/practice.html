@@ -16,7 +16,9 @@
   <body>
     <section id="ar-container" class="container"></section>
     <div id="question-container" class="question-container">
-      <p></p>
+      <p id="question-text"></p>
+      <ul id="alternatives-list"></ul>
+      <div id="feedback-message" class="feedback-message"></div>
     </div>
     <div id="clues" class="clues">
       <p></p>
@@ -29,10 +31,26 @@
       <span id="next-question">↪️</span>
       <span id="question">🤔</span>
     </div>
+    <button id="help-button">❗</button>
+    <div id="help-overlay">
+      <div id="help-content">
+        <span id="help-close">✖</span>
+        <p><strong>¿Necesitas ayuda?</strong></p>
+        <div class="help-section">
+          <div class="help-arrow"></div>
+          <p><strong>↪️</strong> → Siguiente pregunta</p>
+        </div>
+        <div class="help-section">
+          <div class="help-arrow"></div>
+          <p><strong>🤔</strong> → Mostrar pregunta</p>
+        </div>
+      </div>
+    </div>
     <script src="{{ url_for('static', filename='libs/mindar/mindar-image-three.prod.js') }}"></script>
     <script
       src="{{ url_for('static', filename='practice.js') }}"
       type="module"
     ></script>
+    <script src="{{ url_for('static', filename='help.js') }}"></script>
   </body>
 </html>

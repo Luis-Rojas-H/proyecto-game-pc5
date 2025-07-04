@@ -3,7 +3,7 @@ export async function getGeminiResponse(tipo) {
 
   if (tipo === "cultural") {
     prompt = `
-Genera un JSON con exactamente 14 preguntas sobre las culturas del Perú. Cada pregunta debe ser concisa y clara:
+Genera un JSON con exactamente 5 preguntas sobre las culturas del Perú. Cada pregunta debe ser concisa y clara:
 
 REQUISITOS:
 - Pregunta: máximo 3 líneas, directa y clara
@@ -13,15 +13,7 @@ REQUISITOS:
          3.Cultura Nazca
          4.Cultura Moche (Mochica)
          5.Cultura Recuay
-         6.Cultura Tiahuanaco
-         7.Cultura Wari
-         8.Cultura Lambayeque (Sicán)
-         9.Cultura Chachapoyas
-         10.Cultura Chimú
-         11.Cultura Chincha
-         12.Cultura Huari
-         13.Cultura Cupisnique
-         14.Cultura Inca
+         
 - Tiene que ser en ese orden las preguntas
 Formato del JSON:
 
@@ -44,7 +36,7 @@ Solo responde con el JSON, sin texto adicional.
     `;
   } else if (tipo === "matematica") {
     prompt = `
-Genera un JSON con exactamente 2 preguntas de matemáticas básicas. Cada pregunta debe ser concisa y clara:
+Genera un JSON con exactamente 5 preguntas de matemáticas básicas. Cada pregunta debe ser concisa y clara:
 
 REQUISITOS:
 - Pregunta: máximo 3 líneas, directa y clara
@@ -73,7 +65,7 @@ Solo responde con el JSON, sin texto adicional.
     `;
   } else if (tipo === "programacion") {
     prompt = `
-Genera un JSON con exactamente 2 preguntas de programación básica. Cada pregunta debe ser concisa y clara:
+Genera un JSON con exactamente 5 preguntas de programación básica. Cada pregunta debe ser concisa y clara:
 
 REQUISITOS:
 - Pregunta: máximo 3 líneas, directa y clara
@@ -101,7 +93,7 @@ Formato del JSON:
 Solo responde con el JSON, sin texto adicional.
     `;
   }
-  
+
   const API_KEY = "AIzaSyCsW8RShSL0bGQN_38kKyCmy_ZNvotQP6Q";
   const endpoint =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";

@@ -1,42 +1,61 @@
 import { mockWithVideo } from "./libs/camera-mock.js";
+import { getGeminiResponse } from "./gemini-api.js";
+
 const THREE = window.MINDAR.IMAGE.THREE;
 
-const PREGUNTAS = [
-  {
-    pregunta: "¿Qué es la cultura?",
-    opciones: [
-      "Conjunto de conocimientos, creencias y costumbres",
-      "Estilo de vida de un grupo social",
-      "Manifestaciones artísticas y literarias",
-      "Todas las anteriores",
-    ],
-    descripcion:
-      "La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.La cultura es un conjunto de conocimientos, creencias, costumbres y manifestaciones artísticas y literarias que caracterizan a un grupo social.",
-  },
-  {
-    pregunta: "¿Cuál es la importancia de la cultura?",
-    opciones: [
-      "Fomenta la identidad y cohesión social",
-      "Promueve el desarrollo económico",
-      "Enriquece la vida artística y espiritual",
-      "Todas las anteriores",
-    ],
-    descripcion:
-      "La cultura es fundamental para el desarrollo de la identidad y cohesión social, así como para el enriquecimiento de la vida artística y espiritual.",
-  },
-];
+// Obtener el parámetro 'tipo' de la URL
+function getTipoFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("tipo");
+}
 
-const PISTAS = [
+// Variables globales para las preguntas
+let PREGUNTAS = [];
+let PISTAS = [
   "Dirigete a la facultad de Ciencias Sociales, donde encontrarás información sobre la cultura. Puedes enconntrarla en la estatua.",
   "Busca en la biblioteca de la facultad de Ciencias Sociales, allí encontrarás libros y recursos sobre la cultura.",
+  "En la facultad de Ciencias Sociales, dirígete al área de exposiciones culturales, donde encontrarás información sobre las culturas del Perú.",
+  "En la facultad de Ciencias Sociales, busca el mural que representa las culturas del Peru, allí encontrarás información sobre las culturas del Perú.",
+  "En la facultad de Ciencias Sociales, dirígete al área de exposiciones culturales, donde encontrarás información sobre las culturas del Perú.",
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Obtener preguntas de Gemini
+  const tipo = getTipoFromURL();
+  let geminiMessage = await getGeminiResponse(tipo);
+  
+  if (geminiMessage) {
+  geminiMessage = geminiMessage
+    .replace(/^```json[\r\n]*/i, "")
+    .replace(/^```[\r\n]*/i, "")
+    .replace(/```$/i, "")
+    .trim();
+
+  try {
+    const preguntasGemini = JSON.parse(geminiMessage);
+
+    PREGUNTAS = preguntasGemini.map(pregunta => ({
+      pregunta: pregunta.Pregunta,
+      opciones: pregunta.Alternativas,
+      descripcion: pregunta.Descripcion,
+      correcta: pregunta.Alternativa_correcta
+    }));
+
+
+    console.log("Preguntas cargadas desde Gemini:", PREGUNTAS);
+
+  } catch (e) {
+    console.error("Error al parsear JSON de Gemini:", geminiMessage, e);
+    return; // MODIFICADO: No continuar si falla el parseo
+  }
+} else {
+  console.warn("No se pudo obtener respuesta de Gemini");
+  return; // MODIFICADO: No continuar si no hay preguntas
+}
+
   let objectDetectedInitially = false;
-  /*
-  Etiquetas para manejar las preguntas y opciones
-*/
   let indexPregunta = 0;
+  
   const clues = document.getElementById("clues");
   const cluesParagraph = clues.querySelector("p");
   const questionContainer = document.getElementById("question-container");
@@ -45,15 +64,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   const nextQuestionButton = document.getElementById("next-question");
   const question = document.getElementById("question");
 
-  cluesParagraph.textContent = PISTAS[indexPregunta];
-  questionText.textContent = PREGUNTAS[indexPregunta].pregunta;
+  // Inicializar con la primera pregunta
+  if (PREGUNTAS.length > 0) {
+    cluesParagraph.textContent = PISTAS[indexPregunta];
+    questionText.textContent = PREGUNTAS[indexPregunta].pregunta;
+  }
 
   nextQuestionButton.addEventListener("click", () => {
     indexPregunta++;
     if (indexPregunta < PREGUNTAS.length) {
-      updateAllTexts(); // Actualizar el texto en todos los anchors
-      cluesParagraph.textContent = PISTAS[indexPregunta]; // Actualizar la pista
-      questionText.textContent = PREGUNTAS[indexPregunta].pregunta; // Actualizar la pregunta
+      updateAllTexts();
+      cluesParagraph.textContent = PISTAS[indexPregunta];
+      questionText.textContent = PREGUNTAS[indexPregunta].pregunta;
+    } else {
+      // Si no hay más preguntas, reiniciar o mostrar mensaje
+      indexPregunta = 0;
+      updateAllTexts();
+      cluesParagraph.textContent = "¡Has completado todas las preguntas! Reiniciando...";
+      questionText.textContent = PREGUNTAS[indexPregunta].pregunta;
     }
     objectDetectedInitially = false;
     optionsDiv.style.display = "none";
@@ -63,12 +91,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   question.addEventListener("click", () => {
     questionContainer.style.display = "flex";
-    // Ocultar todos los targets cuando se hace click en question
-    anchors.forEach((anchorData) => {
-      anchorData.overlayPlane.visible = false;
-      anchorData.textBgPlane.visible = false;
-      anchorData.textPlane.visible = false;
-    });
   });
 
   // 1. Iniciar MindAR con tu archivo .mind unificado
@@ -88,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     (_, i) => `/static/assets/models/test/${i + 1}.png`
   );
   const loader = new THREE.TextureLoader();
-  const anchors = []; // Array para almacenar los anchors y poder actualizar el texto
+  const anchors = [];
 
   // Función para dibujar rectángulo con bordes redondeados
   function drawRoundedRect(ctx, x, y, width, height, radius) {
@@ -151,10 +173,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     const lineHeight = 25;
     const totalTextHeight = lines.length * lineHeight;
-    const startY = (textCanvas.height - totalTextHeight) / 2 + 15; // Centrado verticalmente
+    const startY = (textCanvas.height - totalTextHeight) / 2 + 15;
 
     lines.forEach((line, index) => {
-      textCtx.fillText(line, textCanvas.width / 2, startY + index * lineHeight); // Centrado horizontalmente
+      textCtx.fillText(line, textCanvas.width / 2, startY + index * lineHeight);
     });
 
     // Actualizar la textura
@@ -169,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       new THREE.PlaneGeometry(1, 1),
       new THREE.MeshBasicMaterial({ map: texture, transparent: true })
     );
-    overlayPlane.position.set(0, 1.5, 0.02); // más arriba y al frente
+    overlayPlane.position.set(0, 1.5, 0.02);
     overlayPlane.visible = false;
 
     // Fondo blanco del cuadro de texto con bordes redondeados
@@ -201,7 +223,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       new THREE.PlaneGeometry(2.5, 2.5),
       new THREE.MeshBasicMaterial({ map: textBgTexture, transparent: true })
     );
-    textBgPlane.position.set(0, -0.5, 0); // más abajo que la imagen
+    textBgPlane.position.set(0, -0.5, 0);
     textBgPlane.visible = false;
 
     // Texto de descripción (como textura en canvas)
@@ -215,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       new THREE.PlaneGeometry(2.5, 2.5),
       new THREE.MeshBasicMaterial({ map: textTexture, transparent: true })
     );
-    textPlane.position.set(0, -0.5, 0.01); // mismo nivel que el fondo pero un poco al frente
+    textPlane.position.set(0, -0.5, 0.01);
     textPlane.visible = false;
 
     // Guardar datos del anchor para poder actualizar el texto
@@ -243,27 +265,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       anchorData.overlayPlane.visible = true;
       anchorData.textBgPlane.visible = true;
       anchorData.textPlane.visible = true;
-      // Si aún no se ha detectado ningún objeto, actualiza la variable
+      
       if (!objectDetectedInitially) {
         objectDetectedInitially = true;
-        // Mostrar el div options
         if (optionsDiv) {
           optionsDiv.style.display = "flex";
           clues.style.display = "none";
-          questionContainer.style.display = "none";
         }
       }
     };
+    
     anchor.onTargetLost = () => {
       anchorData.overlayPlane.visible = false;
       anchorData.textBgPlane.visible = false;
       anchorData.textPlane.visible = false;
-      if (objectDetectedInitially) {
-        objectDetectedInitially = false;
-      }
     };
   }
-  //¡Arrancar MindAR y el render loop!
+  
+  // Arrancar MindAR y el render loop!
   await mindarThree.start();
   renderer.setAnimationLoop(() => renderer.render(scene, camera));
 });

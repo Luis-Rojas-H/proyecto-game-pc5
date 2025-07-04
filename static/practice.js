@@ -63,6 +63,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   question.addEventListener("click", () => {
     questionContainer.style.display = "flex";
+    // Ocultar todos los targets cuando se hace click en question
+    anchors.forEach((anchorData) => {
+      anchorData.overlayPlane.visible = false;
+      anchorData.textBgPlane.visible = false;
+      anchorData.textPlane.visible = false;
+    });
   });
 
   // 1. Iniciar MindAR con tu archivo .mind unificado
@@ -244,15 +250,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (optionsDiv) {
           optionsDiv.style.display = "flex";
           clues.style.display = "none";
+          questionContainer.style.display = "none";
         }
-
-        // Aquí puedes ejecutar cualquier código que solo deba correr la primera vez
       }
     };
     anchor.onTargetLost = () => {
       anchorData.overlayPlane.visible = false;
       anchorData.textBgPlane.visible = false;
       anchorData.textPlane.visible = false;
+      if (objectDetectedInitially) {
+        objectDetectedInitially = false;
+      }
     };
   }
   //¡Arrancar MindAR y el render loop!

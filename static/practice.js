@@ -22,6 +22,7 @@ let PISTAS = [
 document.addEventListener("DOMContentLoaded", async () => {
   // Obtener preguntas de Gemini
   const tipo = getTipoFromURL();
+  const tipoFolder = tipo? tipo.toLowerCase() : "cultura"; 
   let geminiMessage = await getGeminiResponse(tipo);
   
   if (geminiMessage) {
@@ -107,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 3. Cargar las imágenes overlay
   const overlayPaths = Array.from(
     { length: 14 },
-    (_, i) => `/static/assets/models/test/${i + 1}.png`
+    (_, i) => `/static/assets/models/${tipoFolder}/${i + 1}.png`
   );
   const loader = new THREE.TextureLoader();
   const anchors = [];

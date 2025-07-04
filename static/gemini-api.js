@@ -3,13 +3,26 @@ export async function getGeminiResponse(tipo) {
 
   if (tipo === "cultural") {
     prompt = `
-Genera un JSON con exactamente 2 preguntas sobre las culturas del Perú. Cada pregunta debe ser concisa y clara:
+Genera un JSON con exactamente 14 preguntas sobre las culturas del Perú. Cada pregunta debe ser concisa y clara:
 
 REQUISITOS:
 - Pregunta: máximo 3 líneas, directa y clara
 - Alternativas: opciones simples de 1-2 palabras máximo
-- Temas: culturas preincaicas, incaicas o mestizas del Perú
-
+- Temas: 1.Cultura Chavín
+         2.Cultura Paracas
+         3.Cultura Nazca
+         4.Cultura Moche (Mochica)
+         5.Cultura Recuay
+         6.Cultura Tiahuanaco
+         7.Cultura Wari
+         8.Cultura Lambayeque (Sicán)
+         9.Cultura Chachapoyas
+         10.Cultura Chimú
+         11.Cultura Chincha
+         12.Cultura Huari
+         13.Cultura Cupisnique
+         14.Cultura Inca
+- Tiene que ser en ese orden las preguntas
 Formato del JSON:
 
 [

@@ -18,6 +18,12 @@ let PISTAS = [
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const loadingScreen = document.getElementById("loading-screen");
+  const mainSection = document.querySelector("section");
+
+  mainSection.style.display = "none";
+  loadingScreen.style.display = "flex";
+
   const tipo = getTipoFromURL();
   const tipoFolder = tipo;
   let geminiMessage = await getGeminiResponse(tipo);
@@ -38,7 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         correcta: pregunta.Alternativa_correcta,
       }));
 
-      console.log("Preguntas cargadas desde Gemini:", PREGUNTAS);
+      loadingScreen.style.display = "none";
+      mainSection.style.display = "block";
     } catch (e) {
       console.error("Error al parsear JSON de Gemini:", geminiMessage, e);
       return; // MODIFICADO: No continuar si falla el parseo
@@ -50,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let objectDetectedInitially = false;
   let indexPregunta = 0;
+  let scoreNumber = 0;
 
   const clues = document.getElementById("clues");
   const cluesParagraph = clues.querySelector("p");
@@ -59,6 +67,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const optionsDiv = document.getElementById("options");
   const nextQuestionButton = document.getElementById("next-question");
   const question = document.getElementById("question");
+  const score = document.getElementById("score");
+
+  score.textContent = `Score: ${scoreNumber}`;
 
   if (PREGUNTAS.length > 0) {
     cluesParagraph.textContent = PISTAS[indexPregunta];
@@ -66,44 +77,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function mostrarPreguntaYAlternativas() {
-  const preguntaActual = PREGUNTAS[indexPregunta];
-  questionText.textContent = preguntaActual.pregunta;
-  alternativesList.innerHTML = "";
+    const preguntaActual = PREGUNTAS[indexPregunta];
+    questionText.textContent = preguntaActual.pregunta;
+    alternativesList.innerHTML = "";
 
-  const feedbackMessage = document.getElementById("feedback-message");
-  feedbackMessage.textContent = "";
-  feedbackMessage.style.display = "none";
+    const feedbackMessage = document.getElementById("feedback-message");
+    feedbackMessage.textContent = "";
+    feedbackMessage.style.display = "none";
 
-  preguntaActual.opciones.forEach((opcion, i) => {
-    const li = document.createElement("li");
-    li.textContent = opcion;
-    li.style.cursor = "pointer";
-    li.style.padding = "5px";
-    li.style.border = "1px solid #ccc";
-    li.style.marginBottom = "5px";
-    li.style.borderRadius = "8px";
-    li.style.backgroundColor = "#f0f0f0";
+    preguntaActual.opciones.forEach((opcion, i) => {
+      const li = document.createElement("li");
+      li.textContent = opcion;
+      li.style.cursor = "pointer";
+      li.style.padding = "5px";
+      li.style.border = "1px solid #ccc";
+      li.style.marginBottom = "5px";
+      li.style.borderRadius = "8px";
+      li.style.backgroundColor = "#f0f0f0";
 
-    li.addEventListener("click", () => {
-      const letraSeleccionada = String.fromCharCode(65 + i);
+      li.addEventListener("click", () => {
+        const letraSeleccionada = String.fromCharCode(65 + i);
 
-      if (letraSeleccionada === preguntaActual.correcta) {
-        li.style.backgroundColor = "#c8e6c9"; // Verde claro
-        feedbackMessage.textContent = "¡Respuesta correcta!";
-        feedbackMessage.style.color = "green";
-      } else {
-        li.style.backgroundColor = "#ffcdd2"; // Rojo claro
-        feedbackMessage.textContent = "Respuesta incorrecta. Intenta de nuevo.";
-        feedbackMessage.style.color = "red";
-      }
+        if (letraSeleccionada === preguntaActual.correcta) {
+          li.style.backgroundColor = "#c8e6c9"; // Verde claro
+          feedbackMessage.textContent = "¡Respuesta correcta!";
+          feedbackMessage.style.color = "green";
+          scoreNumber++;
+          score.textContent = `Score: ${scoreNumber}`;
+        } else {
+          li.style.backgroundColor = "#ffcdd2"; // Rojo claro
+          feedbackMessage.textContent =
+            "Respuesta incorrecta. Intenta de nuevo.";
+          feedbackMessage.style.color = "red";
+        }
 
-      feedbackMessage.style.display = "block";
+        feedbackMessage.style.display = "block";
+      });
+
+      alternativesList.appendChild(li);
     });
-
-    alternativesList.appendChild(li);
-  });
-}
-
+  }
 
   function updateAllTexts() {
     anchors.forEach((anchorData) => {
@@ -232,7 +245,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     bgCtx.strokeStyle = "#ddd";
     bgCtx.lineWidth = 2;
-    drawRoundedRect(bgCtx, 1, 1, textBgCanvas.width - 2, textBgCanvas.height - 2, 20);
+    drawRoundedRect(
+      bgCtx,
+      1,
+      1,
+      textBgCanvas.width - 2,
+      textBgCanvas.height - 2,
+      20
+    );
     bgCtx.stroke();
 
     const textBgTexture = new THREE.CanvasTexture(textBgCanvas);
@@ -283,6 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (optionsDiv) {
           optionsDiv.style.display = "flex";
           clues.style.display = "none";
+          questionContainer.style.display = "none";
         }
       }
     };
@@ -291,6 +312,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       anchorData.overlayPlane.visible = false;
       anchorData.textBgPlane.visible = false;
       anchorData.textPlane.visible = false;
+      if (objectDetectedInitially) {
+        objectDetectedInitially = false;
+      }
     };
   }
 

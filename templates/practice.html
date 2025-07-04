@@ -15,9 +15,19 @@
   </head>
   <body>
     <section id="ar-container" class="container"></section>
+    <div id="question-container" class="question-container">
+      <p></p>
+    </div>
+    <div id="clues" class="clues">
+      <p></p>
+      <img
+        src="{{ url_for('static', filename='assets/img/caminar.png') }}"
+        alt="Paw Print"
+      />
+    </div>
     <div id="options" class="options">
-      <span>❓❓</span>
-      <span>🤔</span>
+      <span id="next-question">↪️</span>
+      <span id="question">🤔</span>
     </div>
     <script src="{{ url_for('static', filename='libs/mindar/mindar-image-three.prod.js') }}"></script>
     <script

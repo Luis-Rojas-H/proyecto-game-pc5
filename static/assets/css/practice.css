@@ -20,7 +20,7 @@
   bottom: 24px;
   padding-left: 24px;
   padding-right: 24px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   font-size: 36px;
@@ -32,4 +32,47 @@
   border: 1px solid #fff;
   border-radius: 16px;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.question-container {
+  width: 100%;
+  display: none;
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.question-container p {
+  width: 100%;
+  text-align: center;
+  color: #cfd9df;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.clues {
+  width: 100%;
+  position: absolute;
+  color: #330867;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.clues p {
+  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+  border-radius: 16px;
+  padding: 1rem;
+  margin: 0 12px;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+}
+
+.clues img {
+  width: 120px;
+  height: auto;
+  position: absolute;
+  top: 85%;
+  left: 70%;
 }
